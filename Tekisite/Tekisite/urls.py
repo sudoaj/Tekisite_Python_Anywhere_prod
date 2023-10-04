@@ -15,8 +15,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+    path('api-auth', include('rest_framework.urls')),
+    path("admin/", admin.site.urls),
+    path("tekiroom/achievement", include("tekiroom.api.v0.achievement.urls")),
+    path('tekiroom/classroom/', include('tekiroom.api.v0.classroom.urls')),
+    path('tekiroom/courses/', include('tekiroom.api.v0.courses.urls')),
+    path('tekiroom/homeworks/', include('tekiroom.api.v0.homework.urls')),
+    path('tekiroom/live/', include('tekiroom.api.v0.tekiroom_live_classes.urls')),
+    path("account/", include("accounts.urls")),
+    path("", include("accounts.urls")),
+    re_path(r'^auth/', include('drf_social_oauth2.urls', namespace='drf')),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
